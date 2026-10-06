@@ -1,0 +1,29 @@
+# Agent Manifest — AgentRegistry entry point
+# AgentRegistry (mediator/registry/agent_registry.py) reads every key below at
+# ROOT level — do NOT nest keys under an `agent:` block.
+id: "RET-C2-332"
+name: "ConsumerTrendSocialSignalSummarizationAgent"
+namespace: "ret"
+version: "0.1.0"
+enabled: true
+category: "Cat 2"
+generation_mode: "deterministic"  # deterministic | llm
+industry: "RET"
+
+base_type: "ChatAgent"
+
+# Entry point — single dotted import path (module.Class), NOT split module:/class:.
+class: "src.graph.graph.ConsumerTrendSummaryAgent"
+
+# Every node of the domain pipeline declares INTERNAL in its own class body, so
+# INTERNAL is the entry level this agent actually enforces. The manifest used to
+# declare VERIFIED_EXTERNAL, which meant a caller holding exactly the level the
+# manifest asked for was denied at the first domain node — and the deployment
+# smoke check, which picks its caller credential from this key, presented the
+# weaker one and recorded a refused invoke.
+required_trust_level: "INTERNAL"
+
+# Compile-time gates — declare every ctx.secrets.require() key + constructed extra.
+requires:
+  secrets: []
+  extras: []
